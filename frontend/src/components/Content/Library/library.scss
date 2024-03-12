@@ -16,6 +16,11 @@
     justify-content: space-between;
     width: 30%;
     gap: 1rem;
+    @media screen and (max-width: 540px) {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
     .thumb {
     }
     .pdf-info {
@@ -24,6 +29,13 @@
       align-items: flex-start;
       gap: 1rem;
       align-self: flex-end;
+      @media screen and (max-width: 540px) {
+        width: 100%;
+        margin-left: auto;
+        align-items: center;
+        margin-left: 2rem;
+        // background-color: aliceblue;
+      }
     }
   }
 }

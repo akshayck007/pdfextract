@@ -27,14 +27,21 @@
       width: max-content;
       margin: 0 auto;
     }
+
     div {
       color: $text-surface;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
+      @media screen and (max-width: 540px) {
+        flex-direction: column;
+      }
       label {
         margin-left: auto;
+        @media screen and (max-width: 540px) {
+          margin-left: 0;
+        }
       }
       input {
         border: none;
