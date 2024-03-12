@@ -20,6 +20,9 @@
     h2 {
       margin-top: 15px;
       color: $color-secondary;
+      @media screen and (max-width: 540px) {
+        font-size: 1.2rem;
+      }
     }
     span {
       color: $color-primary;
@@ -32,12 +35,27 @@
     .profileInfo {
       display: flex;
       gap: 0.5rem;
+      @media screen and (max-width: 540px) {
+        font-size: 0.8rem;
+      }
     }
     .login {
       border-radius: 7px;
     }
     .signup {
       border-radius: 7px;
+    }
+    .logoutbtn {
+      @media screen and (max-width: 540px) {
+        .text {
+          display: none;
+        }
+      }
+      @media screen and (min-width: 540px) {
+        .logoutIcon {
+          display: none;
+        }
+      }
     }
   }
 }

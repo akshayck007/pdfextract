@@ -16,6 +16,11 @@
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    span {
+      @media screen and (max-width: 540px) {
+        display: none;
+      }
+    }
   }
   .credits {
     color: $color-secondary;

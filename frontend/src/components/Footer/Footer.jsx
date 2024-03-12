@@ -8,13 +8,14 @@ function Footer() {
       <p className="credits">&copy;pdfextract.com</p>
       <div className="social">
         <a href="#">
-          <FaFacebook /> facebook
+          <FaFacebook /> <span>facebook</span>
         </a>
         <a href="#">
-          <FaInstagram /> instagram
+          <FaInstagram /> <span>instagram</span>
         </a>
         <a href="#">
-          <FaTwitter /> twitter
+          <FaTwitter />
+          <span>twitter</span>
         </a>
       </div>
     </div>
