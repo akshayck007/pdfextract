@@ -1,0 +1,29 @@
+@import "../../../styles/variables.scss";
+.library {
+  width: min(70rem, 90vw);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  border-radius: 10px;
+  gap: 1rem;
+  background-color: $bg-surface;
+  padding-block: 3rem;
+  .libfile {
+    display: flex;
+    // background-color: aquamarine;
+    justify-content: space-between;
+    width: 30%;
+    gap: 1rem;
+    .thumb {
+    }
+    .pdf-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      align-self: flex-end;
+    }
+  }
+}

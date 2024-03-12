@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from "react";
+import "./styles/global.scss";
+import Navbar from "./components/Navbar/Navbar";
+import Content from "./components/Content/Content";
+import Footer from "./components/Footer/Footer";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import Signup from "./components/Signup/Signup";
+import Login from "./components/Login/Login";
+import { Toaster } from "react-hot-toast";
+import { useAuthContext } from "./context/AuthContext";
+import Library from "./components/Content/Library/Library";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { authUser } = useAuthContext();
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authUser && window.location.pathname.includes("/library")) {
+      navigate("/");
+    }
+  }, [authUser, navigate]);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div className="container">
+        <Navbar />
+        <div className="contentContainer">
+          <Routes>
+            <Route path="/" element={<Content />} />
+            <Route
+              path="/signup"
+              element={authUser ? <Navigate to="/" /> : <Signup />}
+            />
+            <Route
+              path="/login"
+              element={authUser ? <Navigate to="/" /> : <Login />}
+            />
+            {authUser && (
+              <Route
+                path={`/${authUser.userId}/library`}
+                element={<Library />}
+              />
+            )}
+          </Routes>
+          <Toaster />
+        </div>
+        <Footer />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;

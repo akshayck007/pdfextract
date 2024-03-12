@@ -4,7 +4,9 @@
   "description": "Backend for pdfextractor app",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon backend/app.js"
+    "server": "nodemon backend/app.js",
+    "start": "node backend/app.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "type": "module",
   "author": "Akshay",
@@ -17,6 +19,8 @@
     "express-fileupload": "^1.4.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "pdf-lib": "^1.17.1",
+    "pdf-merge": "^1.2.0"
   }
 }

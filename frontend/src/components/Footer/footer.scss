@@ -1,0 +1,23 @@
+@import "../../styles/variables.scss";
+
+.footer {
+  color: $color-secondary !important;
+  background-color: $bg-surface;
+  color: $text-surface;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-top: 1px solid $color-secondary;
+  display: flex;
+  justify-content: space-between;
+  .social {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .credits {
+    color: $color-secondary;
+  }
+}

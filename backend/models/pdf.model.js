@@ -7,10 +7,6 @@ const pdfSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  pageCount: {
-    type: Number,
-    required: true,
-  },
   dirUrl: {
     type: String,
     required: true,

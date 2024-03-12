@@ -1,0 +1,8 @@
+@import "../../../styles/variables.scss";
+
+.pdfview {
+  width: min(70rem, 90vw);
+  background-color: $bg-surface;
+  padding: $padding;
+  border-radius: 10px;
+}

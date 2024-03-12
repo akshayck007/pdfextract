@@ -1,0 +1,43 @@
+@import "../../styles/variables.scss";
+.fillerNav {
+  height: 4rem;
+  width: 100%;
+}
+.navbar {
+  // background-color: $bg-surface;
+  position: fixed;
+  width: 100%;
+  color: $text-surface;
+  background-color: $bg-surface;
+  z-index: 1000;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid $color-secondary;
+  .logoContainer {
+    h2 {
+      margin-top: 15px;
+      color: $color-secondary;
+    }
+    span {
+      color: $color-primary;
+    }
+  }
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    .profileInfo {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .login {
+      border-radius: 7px;
+    }
+    .signup {
+      border-radius: 7px;
+    }
+  }
+}

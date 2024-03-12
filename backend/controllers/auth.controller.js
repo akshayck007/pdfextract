@@ -30,16 +30,22 @@ export const signup = async (req, res) => {
 
     if (newUser) {
       generateTokenAndSetCookie(newUser._id, res);
-      newUser.save();
+      await newUser.save();
 
-      res.status(201).json({ message: "Account Registered!", username, email });
+      res.status(201).json({
+        message: "Account Registered!",
+        username,
+        email,
+        userId: newUser._id,
+        library: newUser.library,
+      });
     } else {
       res
         .status(400)
         .json({ error: "user not created , some error God knows What!" });
     }
   } catch (error) {
-    console.log("Error signing up: ", error.message);
+    console.log("Error signing up: ", error);
     res.status(500).json({ error: "internal server error" });
   }
 };
@@ -48,18 +54,30 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-    const isPasswordMatching = bcrypt.compare(password, user?.password || "");
-    if (!user || !isPasswordMatching) {
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid username or password" });
+    }
+
+    const isPasswordMatching = await bcrypt.compare(
+      password,
+      user.password || ""
+    );
+
+    if (!isPasswordMatching) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
     generateTokenAndSetCookie(user._id, res);
-    res
-      .status(200)
-      .json({ message: "login Successfull", userId: user._id, username });
+    res.status(200).json({
+      message: "Login successful",
+      userId: user._id,
+      username,
+      library: user.library,
+    });
   } catch (error) {
-    console.log("error login in: ", error.message);
-    res.status(500).json({ error: "internal server error" });
+    console.error("Error during login: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

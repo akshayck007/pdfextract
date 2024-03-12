@@ -1,0 +1,81 @@
+@import "./variables.scss";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: 0.1s linear;
+}
+
+html {
+  &::-webkit-scrollbar {
+    position: absolute;
+    width: 5px;
+    height: 100vh;
+    right: 0;
+    top: 0;
+  }
+  &::-webkit-scrollbar-thumb {
+    width: 5px;
+    background-color: lighten($bg-surface, 10);
+  }
+}
+
+body {
+  font-family: monospace;
+  font-size: 1rem;
+  background-color: $bg-main;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+h2 {
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.container {
+  background-color: $bg-main;
+  color: $text-main;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contentContainer {
+}
+
+.btn-primary {
+  border: 1px solid $text-surface;
+  color: $text-surface;
+  padding: 5px 10px;
+  background: none;
+  border-radius: 10px;
+  background-color: $color-primary;
+  &:hover {
+    background-color: darken($color-primary, 10);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  border: 1px solid $color-secondary;
+  color: $color-secondary;
+  padding: 5px 10px;
+  background: none;
+  border-radius: 10px;
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+p {
+  color: $text-surface;
+}
