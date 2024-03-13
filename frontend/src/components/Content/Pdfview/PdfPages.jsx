@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "react-pdf";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./pdfpages.scss";
 import axios from "axios";
 
@@ -12,14 +13,12 @@ function PdfPages({ pdfName, pageCount }) {
   }
 
   function handleSelectionClick(pageNum) {
-    if (selectedButton && selectedButton == "select") {
+    if (selectedButton && selectedButton === "select") {
       setSelectedPages((prevPages) => {
         if (prevPages.includes(pageNum)) {
-          return prevPages
-            .filter((item) => item !== pageNum)
-            .sort((a, b) => a - b);
+          return prevPages.filter((item) => item !== pageNum);
         } else {
-          return [...prevPages, pageNum].sort((a, b) => a - b);
+          return [...prevPages, pageNum];
         }
       });
     }
@@ -41,6 +40,14 @@ function PdfPages({ pdfName, pageCount }) {
       console.log(error.message);
     }
   }
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(selectedPages);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setSelectedPages(items);
+  };
 
   return (
     <div className="pdfPages">
@@ -66,24 +73,44 @@ function PdfPages({ pdfName, pageCount }) {
         </button>
       </div>
       <div className="gridContainer">
-        {Array.from(new Array(pageCount), (el, index) => (
-          <div
-            onClick={() => {
-              handleSelectionClick(index + 1);
-            }}
-            key={index + 1}
-            className={`gridItem ${
-              selectedButton === "select"
-                ? "select"
-                : selectedButton === "align"
-                ? "align"
-                : ""
-            } ${selectedPages.includes(index + 1) ? "selected" : ""}`}
-          >
-            <Page width={250} pageNumber={index + 1} />
-            <p>Page Number: {index + 1}</p>
-          </div>
-        ))}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="selectedPages">
+            {(provided) => (
+              <div
+                className="gridContainer"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {selectedPages.map((pageNum, index) => (
+                  <Draggable
+                    key={pageNum}
+                    draggableId={pageNum.toString()}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <div
+                          onClick={() => handleSelectionClick(pageNum)}
+                          className={`gridItem ${
+                            selectedPages.includes(pageNum) ? "selected" : ""
+                          }`}
+                        >
+                          <Page width={250} pageNumber={pageNum} />
+                          <p>Page Number: {pageNum}</p>
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );
