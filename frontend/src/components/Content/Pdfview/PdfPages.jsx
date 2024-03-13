@@ -1,24 +1,28 @@
 import React, { useState } from "react";
 import { Page } from "react-pdf";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./pdfpages.scss";
 import axios from "axios";
-import toast from "react-hot-toast";
 
 function PdfPages({ pdfName, pageCount }) {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedPages, setSelectedPages] = useState([]);
+  const [align, setAlign] = useState(false);
 
   function handleFunctionalBtnClick(btnName) {
     setSelectedButton(btnName);
+    if (btnName === "align") {
+      setAlign(true);
+    } else {
+      setAlign(false);
+    }
   }
 
   function handleSelectionClick(pageNum) {
-    if (selectedButton && selectedButton == "select") {
+    if (selectedButton && selectedButton === "select") {
       setSelectedPages((prevPages) => {
         if (prevPages.includes(pageNum)) {
-          return prevPages
-            .filter((item) => item !== pageNum)
-            .sort((a, b) => a - b);
+          return prevPages.filter((item) => item !== pageNum);
         } else {
           return [...prevPages, pageNum].sort((a, b) => a - b);
         }
@@ -28,7 +32,7 @@ function PdfPages({ pdfName, pageCount }) {
 
   async function handleDownload() {
     if (selectedPages.length === 0) {
-      toast.error("Please select pages before downloading.");
+      alert("Please select pages before downloading.");
       return;
     }
     try {
@@ -41,6 +45,16 @@ function PdfPages({ pdfName, pageCount }) {
     } catch (error) {
       console.log(error.message);
     }
+  }
+
+  function onDragEnd(result) {
+    if (!result.destination) return;
+
+    const reorderedPages = Array.from(selectedPages);
+    const [removed] = reorderedPages.splice(result.source.index, 1);
+    reorderedPages.splice(result.destination.index, 0, removed);
+
+    setSelectedPages(reorderedPages);
   }
 
   return (
@@ -67,24 +81,41 @@ function PdfPages({ pdfName, pageCount }) {
         </button>
       </div>
       <div className="gridContainer">
-        {Array.from(new Array(pageCount), (el, index) => (
-          <div
-            onClick={() => {
-              handleSelectionClick(index + 1);
-            }}
-            key={index + 1}
-            className={`gridItem ${
-              selectedButton === "select"
-                ? "select"
-                : selectedButton === "align"
-                ? "align"
-                : ""
-            } ${selectedPages.includes(index + 1) ? "selected" : ""}`}
-          >
-            <Page width={250} pageNumber={index + 1} />
-            <p>Page Number: {index + 1}</p>
-          </div>
-        ))}
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="selectedPages">
+            {(provided) => (
+              <div
+                className="gridContainer"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {selectedPages.map((pageNum, index) => (
+                  <Draggable
+                    key={pageNum}
+                    draggableId={pageNum.toString()}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        onClick={() => handleSelectionClick(pageNum)}
+                        className={`gridItem ${
+                          selectedButton === "align" ? "align" : ""
+                        } ${selectedPages.includes(pageNum) ? "selected" : ""}`}
+                      >
+                        <Page width={250} pageNumber={pageNum} />
+                        <p>Page Number: {pageNum}</p>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );
