@@ -130,3 +130,23 @@ export const library = async (req, res) => {
     res.status(400).json({ error: "Bad request" });
   }
 };
+
+export const deletePdf = async (req, res) => {
+  const { userId, pdfId } = req.body;
+  const pdfFile = PDF.findById(pdfId);
+  const pdfName = pdfFile.pdfTitle;
+  const filePath = path.join(__dirname, "backend", "uploads", `${pdfName}.pdf`);
+  try {
+    await PDF.findByIdAndDelete(pdfId);
+    await User.findByIdAndUpdate(userId, {
+      $pull: { library: pdfId },
+    });
+
+    // delete from public uploads folder
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    res.status(200).json({ message: "PDF REMOVED" });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ error: "cannot delete the pdf file" });
+  }
+};

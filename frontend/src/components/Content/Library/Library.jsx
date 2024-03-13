@@ -12,24 +12,37 @@ function Library() {
   const [library, setLibrary] = useState([]);
   const { authUser } = useAuthContext();
 
-  useEffect(() => {
-    async function getPdfs() {
-      try {
-        const formData = new FormData();
-        formData.append("userId", authUser.userId);
-        const response = await axios.post("/api/pdf/library", formData);
-        const data = response.data;
-        if (data.error) {
-          throw new Error(data.error);
-        }
-        console.log(data.library);
-        setLibrary(data.library);
-      } catch (error) {
-        toast.error(error.message);
+  async function getPdfs() {
+    try {
+      const formData = new FormData();
+      formData.append("userId", authUser.userId);
+      const response = await axios.post("/api/pdf/library", formData);
+      const data = response.data;
+      if (data.error) {
+        throw new Error(data.error);
       }
+      console.log(data.library);
+      setLibrary(data.library);
+    } catch (error) {
+      toast.error(error.message);
     }
+  }
+
+  useEffect(() => {
     getPdfs();
   }, [authUser.userId]);
+
+  async function deletePdf(pdfId) {
+    try {
+      const formData = new FormData();
+      formData.append("userId", authUser.userId);
+      formData.append("pdfId", pdfId);
+      const response = await axios.post("/api/pdf/delete", formData);
+      console.log(response.data);
+      getPdfs();
+    } catch (error) {}
+  }
+
   return (
     <div className="library">
       {library ? (
@@ -46,6 +59,12 @@ function Library() {
                 <a className="btn-secondary" href={item.dirUrl}>
                   Download
                 </a>
+                <button
+                  onClick={() => deletePdf(item._id)}
+                  className="btn-secondary"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
