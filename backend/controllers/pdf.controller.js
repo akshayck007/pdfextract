@@ -21,7 +21,7 @@ export const upload = async (req, res) => {
       Date.now() + "_" + receivedFile.name.split(" ").join("_");
     const uploadsPath = path.join(__dirname, "backend", "uploads", uniqueName);
 
-    receivedFile.mv(uploadsPath, (err) => {
+    receivedFile.mv(uploadsPath, async (err) => {
       if (err) {
         console.error("Error uploading file:", err);
 
@@ -37,50 +37,51 @@ export const upload = async (req, res) => {
           details: "Error uploading the file.",
         });
       }
-    });
 
-    const publicPath = `/backend/uploads/${uniqueName}`;
+      const publicPath = `/backend/uploads/${uniqueName}`;
 
-    // Check if userId is provided
-    const { userId } = req.body;
-    console.log(userId);
-    if (userId !== "null") {
-      // Attempt to find the user by userId
+      // Check if userId is provided
+      const { userId } = req.body;
+      console.log(userId);
+      if (userId !== "null") {
+        // Attempt to find the user by userId
 
-      const user = await User.findById(userId);
+        const user = await User.findById(userId);
 
-      if (user) {
+        if (user) {
+          const newPDF = new PDF({
+            pdfTitle: uniqueName,
+            dirUrl: publicPath,
+            user: userId,
+          });
+
+          await newPDF.save();
+
+          user.library.push(newPDF);
+          await user.save();
+
+          return res.status(201).json({
+            message: "File uploaded successfully",
+            fileName: uniqueName,
+            publicPath,
+          });
+        }
+      } else {
         const newPDF = new PDF({
           pdfTitle: uniqueName,
           dirUrl: publicPath,
-          user: userId,
         });
 
         await newPDF.save();
 
-        user.library.push(newPDF);
-        await user.save();
-
-        return res.status(201).json({
+        res.status(201).json({
           message: "File uploaded successfully",
           fileName: uniqueName,
           publicPath,
         });
       }
-    } else {
-      const newPDF = new PDF({
-        pdfTitle: uniqueName,
-        dirUrl: publicPath,
-      });
+    });
 
-      await newPDF.save();
-
-      res.status(201).json({
-        message: "File uploaded successfully",
-        fileName: uniqueName,
-        publicPath,
-      });
-    }
     // If userId is not provided or the user is not found, store the PDF without associating it with any user
   } catch (error) {
     console.error("Error in upload function:", error);
