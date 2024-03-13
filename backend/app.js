@@ -6,6 +6,7 @@ import connectDB from "./db/conncectDB.js";
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";
+import job from "./cron/cron.js";
 const app = express();
 const PORT = process.env.PORT || 8080;
 const __dirname = path.resolve();
@@ -29,5 +30,6 @@ app.get("*", (req, res) => {
 
 app.listen(PORT, () => {
   connectDB();
+  job.start();
   console.log(`listening at ${PORT}`);
 });
