@@ -45,7 +45,7 @@ function Library() {
 
   return (
     <div className="library">
-      {library ? (
+      {library && library.length > 0 ? (
         <>
           {library.map((item, index) => (
             <div key={index} className="libfile">
